@@ -38,7 +38,8 @@ class EncryptedAttributesCookbook
     # @return [Boolean] `true` if we are in Chef `<= 11.12`.
     # @api private
     def self.chef11old?
-      Chef::VERSION.to_f <= 11.12
+      major, minor = Chef::VERSION.split('.').take(2).map(&:to_i)
+      ([major, minor] <=> [11, 12]) < 1
     end
 
     # Checks if we are in Chef `>= 11.14`.
