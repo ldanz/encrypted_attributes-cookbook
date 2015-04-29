@@ -23,6 +23,66 @@ require 'cookbook_helpers.rb'
 describe EncryptedAttributesCookbook::Helpers, order: :random do
   let(:helpers) { described_class }
 
+  context '.chef12?' do
+    {
+      '11.6.2' => false,
+      '11.8.0' => false,
+      '11.10.0' => false,
+      '11.12.0' => false,
+      '11.16.4' => false,
+      '12.0.0' => true,
+      '12.3.0' => true
+    }.each do |chef_version, result|
+      context "with Chef #{chef_version.inspect}" do
+        before { stub_const('Chef::VERSION', chef_version) }
+
+        it "returns #{result.inspect}" do
+          expect(helpers.chef12?).to be(result)
+        end
+      end
+    end
+  end
+
+  context '.chef11old?' do
+    {
+      '11.6.2' => true,
+      '11.8.0' => true,
+      '11.10.0' => true,
+      '11.12.0' => true,
+      '11.16.4' => false,
+      '12.0.0' => false,
+      '12.3.0' => false
+    }.each do |chef_version, result|
+      context "with Chef #{chef_version.inspect}" do
+        before { stub_const('Chef::VERSION', chef_version) }
+
+        it "returns #{result.inspect}" do
+          expect(helpers.chef11old?).to be(result)
+        end
+      end
+    end
+  end
+
+  context '.chef11new?' do
+    {
+      '11.6.2' => false,
+      '11.8.0' => false,
+      '11.10.0' => false,
+      '11.12.0' => false,
+      '11.16.4' => true,
+      '12.0.0' => false,
+      '12.3.0' => false
+    }.each do |chef_version, result|
+      context "with Chef #{chef_version.inspect}" do
+        before { stub_const('Chef::VERSION', chef_version) }
+
+        it "returns #{result.inspect}" do
+          expect(helpers.chef11new?).to be(result)
+        end
+      end
+    end
+  end
+
   context '.require_build_essential?' do
     [
       { chef_version: '12.0.0',  gem_version: nil,     result: false },
